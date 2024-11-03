@@ -23,7 +23,8 @@ Pages:
 
 <template>
   <div>
-    <h2>Recipes</h2>
+    <NavBar></NavBar>
+    <h2 style="font-weight: 800;">RECIPES</h2>
     <RecipeFilter @update-filter="filterRecipes" />
     <div v-for="recipe in filteredRecipes" :key="recipe.id">
       <Recipe :recipe="recipe" />
@@ -34,9 +35,10 @@ Pages:
 <script>
   import Recipe from './components/Recipe.vue';
   import RecipeFilter from './components/Filter.vue';
+  import NavBar from './components/NavBar.vue';
 
   export default {
-    components: { Recipe, RecipeFilter },
+    components: { Recipe, RecipeFilter, NavBar },
 
     data() {
       return {
