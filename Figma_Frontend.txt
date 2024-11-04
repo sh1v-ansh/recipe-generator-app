@@ -1,0 +1,5 @@
+Figma Frontend
+
+Frontend draft: https://www.figma.com/design/1nCpH81Ul1n7Wv3NgCc65v/Recipe-Generator?node-id=0-1&t=79p2u2AjC9BktNMC-1
+
+Prototype: https://www.figma.com/proto/1nCpH81Ul1n7Wv3NgCc65v/Recipe-Generator?node-id=0-1&t=79p2u2AjC9BktNMC-1
