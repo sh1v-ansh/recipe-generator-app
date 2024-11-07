@@ -20,7 +20,7 @@
   border: 1px solid #000000;
   border-radius: 25px;
   padding: 1em;
-  margin: 0.5em 0;
+  margin: 0.5em 0.5em;
   box-shadow: 3px 3px 3px gray;
 }
 </style>

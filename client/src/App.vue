@@ -22,9 +22,9 @@ Pages:
 */
 
 <template>
-  <div>
+  <div style="width: 100vw; padding: 0;">
     <NavBar></NavBar>
-    <h2 style="font-weight: 800;">RECIPES</h2>
+    <h1 style="font-weight: 800;">RECIPES</h1>
     <RecipeFilter @update-filter="filterRecipes" />
     <div v-for="recipe in filteredRecipes" :key="recipe.id">
       <Recipe :recipe="recipe" />
