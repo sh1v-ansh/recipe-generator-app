@@ -77,12 +77,3 @@
   transform: scaleX(1);
 }
 </style>
-
-=======
-
-
-</template>
-
-<style>
-
-</style>
