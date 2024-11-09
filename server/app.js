@@ -1,6 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
-const serviceAccount = require('./service-key.json');
+const cors = require('cors')
+const serviceAccount = require('./service_key.json')
 
 // Initialize Firebase Admin
 admin.initializeApp({
@@ -10,6 +11,7 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 class RecipeQueryPaginator {
   constructor(pageSize = 10) {
@@ -19,14 +21,14 @@ class RecipeQueryPaginator {
 
   async compositeQuery(conditions) {
     let query = db.collection('recipes');
-    
+
     // Separate in-memory and Firestore filters
     const inMemoryFilters = [];
     const firestoreFilters = [];
 
     conditions.forEach(condition => {
       const { field, op, value, field_type } = condition;
-      
+
       if (field === 'nutrition' && field_type === 'calories') {
         inMemoryFilters.push(condition);
       } else {
@@ -59,7 +61,7 @@ class RecipeQueryPaginator {
             matchesAll = false;
             break;
           }
-          
+
           const calories = recipe.nutrition[0];
           if (filter.op === '<=' && calories > filter.value) {
             matchesAll = false;
@@ -93,10 +95,17 @@ class RecipeQueryPaginator {
 // Create a paginator instance
 const paginator = new RecipeQueryPaginator(5);
 
+// app.get('/test', (req, res) => {
+//   res.json({
+//     'this': 'is a test'
+//   })
+// })
+
 // Routes
 app.post('/api/recipes/search', async (req, res) => {
   try {
     const { conditions } = req.body;
+    console.log(conditions)
     if (!conditions || !Array.isArray(conditions)) {
       return res.status(400).json({ error: 'Invalid conditions format' });
     }
