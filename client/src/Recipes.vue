@@ -27,7 +27,7 @@
 <script>
 import Recipe from './components/Recipe.vue';
 import RecipeFilter from './components/Filter.vue';
-import TabWrapper from './components/TabWrapper.vue'; // Import the new component
+import TabWrapper from './components/TabWrapper.vue';
 
 export default {
   components: { Recipe, RecipeFilter, TabWrapper },
