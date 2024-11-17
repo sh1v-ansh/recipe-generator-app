@@ -15,20 +15,40 @@
       All
     </button>
     <div v-for="(tabSetValues, tabSetTitle) in filterState" :key="tabSetTitle">
-      <TabWrapper :title="tabSetTitle" :tabs="tabSetValues" />
+      <TabWrapper :title="tabSetTitle" :tabs="tabSetValues" 
+      :is-dropdown-open="dropdownState[tabSetTitle]" 
+      @update:dropdown="toggleDropdown(tabSetTitle)"
+      @filter-changed="updateSelectedFilters" />
     </div>
   </div>
-  <div style="width: 100vw; padding: 0;">
-    <RecipeFilter @update-filter="filterRecipes" />
-    <div v-for="recipe in filteredRecipes" :key="recipe.id">
-      <Recipe :recipe="recipe" />
-    </div>
+  <div class="recipe-card-container">
+    <RecipeCard
+      v-for="recipe in paginatedRecipes"
+      :key="recipe.id"
+      :title="recipe.title"
+      :description="recipe.description"
+      :image="recipe.image"
+      :tags="recipe.tags"
+      :recipe-id="recipe.id"
+      @view-recipe="viewRecipe"
+    />
+  </div>
+  <div class="pagination">
+    <button
+      v-for="page in totalPages"
+      :key="page"
+      :class="{ active: currentPage.value === page }"
+      @click="changePage(page)"
+    >
+      {{ page }}
+    </button>
   </div>
 </template>
 <script setup lang="ts">
 import Recipe from './components/Recipe.vue';
 import RecipeFilter from './components/Filter.vue';
-import { reactive, computed } from 'vue';
+import { reactive, ref, computed } from 'vue';
+import RecipeCard from './components/RecipeCard.vue';
 import TabWrapper from './components/TabWrapper.vue';
 
 const filterState = reactive({
@@ -56,20 +76,84 @@ const filterState = reactive({
   }
 });
 
+const dropdownState = reactive({
+  Allergens: false,
+  Diet: false,
+  'Meal Category': false,
+  Nutrition: false,
+});
+
+const toggleDropdown = (category: string) => {
+  dropdownState[category] = !dropdownState[category];
+};
+
+const selectedFilters = reactive<string[]>([]);
+
+const updateSelectedFilters = (category: string, filter: string, isSelected: boolean) => {
+  const filterKey = `${category}: ${filter}`;
+  if (isSelected) {
+    if (!selectedFilters.includes(filterKey)) selectedFilters.push(filterKey);
+  } 
+  else{
+    const index = selectedFilters.indexOf(filterKey);
+    if (index > -1) selectedFilters.splice(index, 1);
+  }
+  
+  /***Integration with the backend; use selectedFilters to figure out filters are activated,
+  check for formatting */
+  console.log("All selected filters:", selectedFilters);
+};
+
+//Checker for the All button to determine if active
 const isAllActive = computed(() => {
   return !Object.values(filterState).some(category =>
     Object.values(category).some(active => active)
   );
 });
 
+//Clears filters if All button is pressed
 const resetFilters = () => {
+  selectedFilters.length = 0;
   Object.keys(filterState).forEach(category => {
     Object.keys(filterState[category]).forEach(filter => {
       filterState[category][filter] = false;
     });
   });
+  Object.keys(dropdownState).forEach(category => {
+    dropdownState[category] = false;
+  });
+  console.log("All selected filters:", selectedFilters);
 };
  
+//Example recipe data, **Integration with backend; include api in this
+//Ignore image for now...
+const recipes = reactive([
+  { id: 1, title: 'Spaghetti Carbonara', description: 'A classic Italian pasta dish.', image: 'carbonara.jpg', tags: ['Pasta', 'Dinner', 'Italian'] },
+]);
+
+
+//Pagination state
+const currentPage = ref(1);
+const recipesPerPage = 9;
+
+const totalPages = computed(() => Math.ceil(recipes.length / recipesPerPage));
+
+//Paginated recipes
+const paginatedRecipes = computed(() => {
+  const start = (currentPage.value - 1) * recipesPerPage;
+  const end = start + recipesPerPage;
+  return recipes.slice(start, end);
+});
+
+//Change the page
+const changePage = (page: number) => {
+  currentPage.value = page;
+};
+
+//Helper "View Recipe"
+const viewRecipe = (recipeId: number) => {
+  console.log(`Viewing recipe with ID: ${recipeId}`);
+};
 
 </script>
 
@@ -82,7 +166,6 @@ const resetFilters = () => {
 .category-container {
   display: flex;
   gap: 15px; 
-  flex-wrap: wrap; 
   justify-content: center;
 }
 .all-button{
@@ -97,6 +180,7 @@ const resetFilters = () => {
   cursor: pointer;
   font-weight: bold;
   text-transform: uppercase;
+  
 }
 
 .all-button.hover,
@@ -139,6 +223,40 @@ h1 {
   opacity: 0.60;
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.recipe-card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #ee6352;
+  color: white;
+  border-color: #ee6352;
+}
+
+.pagination button:hover {
+  background-color: #d9534f;
+  color: white;
 }
 
 </style>

@@ -1,52 +1,55 @@
 <script setup lang="ts">
-import filledIcon from '../assets/checked.svg';
-import outlinedIcon from '../assets/unchecked.svg';
-import { computed, ref, type StyleValue } from 'vue';
+import checked from '../assets/checked.svg';
+import unchecked from '../assets/unchecked.svg';
+import { reactive, computed, ref} from 'vue';
 
-const props = defineProps<{ title: string; tabs: Record<string, boolean> }>();
-
-//Track dropdown visibility
-const isDropdownOpen = ref(false);
+const emit = defineEmits<{
+  (event: 'filter-changed', category: string, filter: string, isSelected: boolean): void;
+  (event: 'update:dropdown', isOpen: boolean): void;
+}>();
+const props = defineProps<{ title: string; tabs: Record<string, boolean>; isDropdownOpen: boolean; }>();
 
 //Toggle dropdown visibility
 const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
+  emit('update:dropdown', !props.isDropdownOpen); //Sends to toggleDropdown(tabSetTitle) in Recipes.vue
 };
+
+//Changes category button to active if isActive is true
+const getIcon = (isActive: boolean) => (isActive ? checked : unchecked );
+
+//Checker to see if Category button has any selected filter
+const isActive = computed(() => {
+  return Object.values(props.tabs).some((state) => state === true);
+});
 
 //Toggle each button's state (active/inactive)
 const toggleTabState = (key: string) => {
   props.tabs[key] = !props.tabs[key];
-
-  //Integration with the backend; use activeFilters to figure out filters are activated
-  const activeFilters = Object.keys(props.tabs).filter((key) => props.tabs[key]);
-  console.log(activeFilters)
+  emit('filter-changed', props.title, key, props.tabs[key]); //Sends to updateSelectedFilters in Recipes.vue
 };
-const getIcon = (isActive: boolean) => (isActive ? filledIcon : outlinedIcon);
-const isActive = computed(() => {
-  return Object.values(props.tabs).some((state) => state === true);
-});
+
 </script>
 
 <template>
-  
-  <div>
-    <button class="main-category-button" 
-    :class="{ active: isDropdownOpen || isActive }" 
-    @click="toggleDropdown">
-      {{ title }}
-      <img src="../assets/chevron-down.svg" alt="Chevron Icon" :class="{ rotated: isDropdownOpen}" />
-    </button>
-
-    <div v-if="isDropdownOpen" class="dropdown-menu">
-      <button
-        v-for="(value, key) in tabs"
-        :key="key"
-        @click="toggleTabState(key)"
-        class="dropdown-item"
-      >
-        {{ key }}
-        <img :src="getIcon(value)" class="filter-icon" />
+  <div class="dropdown-menu-container">
+    <div>
+      <button class="main-category-button" 
+      :class="{ 'diet-category-button': title === 'Diet', active: isDropdownOpen || isActive }" 
+      @click="toggleDropdown">
+        {{ title }}
+        <img src="../assets/chevron-down.svg" alt="Chevron Icon" :class="{ rotated: isDropdownOpen}" />
       </button>
+      <div v-if="props.isDropdownOpen" class="dropdown-menu">
+        <button
+          v-for="(value, key) in tabs"
+          :key="key"
+          @click="toggleTabState(key)"
+          class="dropdown-item"
+        >
+          {{ key }}
+          <img :src="getIcon(value)" class="filter-icon" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -66,6 +69,11 @@ const isActive = computed(() => {
   text-transform: uppercase;
 }
 
+.diet-category-button {
+  width: flex; 
+  min-width: 150px
+}
+
 .main-category-button.hover,
 .main-category-button:hover {
   background-color: rgba(159, 220, 38, 0.3); 
@@ -77,13 +85,18 @@ const isActive = computed(() => {
   color: rgba(38, 37, 34, 1);
 }
 
+.dropdown-menu-container {
+  position: relative;
+  
+}
+
 .dropdown-menu {
-  display: flex;
-  flex-direction: column;
   position: absolute;
+  width: 100%; 
   background-color: #f3efe6;
+  border-radius: 24px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 1000; 
 }
 
 .dropdown-item {
@@ -93,7 +106,7 @@ const isActive = computed(() => {
   color: #333;
   background-color: #f3efe6;
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 24px;
   width: 100%;
 
 }
