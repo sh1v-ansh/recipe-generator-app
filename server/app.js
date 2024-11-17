@@ -74,12 +74,11 @@ app.post('/api/users/query-preferences', async (req, res) => {
 
     const snapshot = await query.get();
 
-    // Step 2: Filter documents based on the 'pref' fields
     const matchingDocuments = [];
     snapshot.forEach((doc) => {
       const data = doc.data();
       
-      // Check if all required fields in 'pref' are present in the document
+
       const profile = data.profile || {};
       const hasAllFields = pref.every(field => profile.hasOwnProperty(field));
 
@@ -88,12 +87,11 @@ app.post('/api/users/query-preferences', async (req, res) => {
       }
     });
 
-    // Determine the last visible document for pagination
     const lastVisible = snapshot.docs[snapshot.docs.length - 1];
 
     res.status(200).json({ 
       matchingDocuments,
-      lastVisibleId: lastVisible ? lastVisible.id : null // Send back the last document ID
+      lastVisibleId: lastVisible ? lastVisible.id : null 
     });
 
   } catch (error) {
