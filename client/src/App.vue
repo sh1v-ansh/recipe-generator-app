@@ -15,9 +15,11 @@
  */
 
 <template>
-  <div style="width: 100vw; padding: 0;">
+  <div class="app-container">
     <NavBar v-if="!$route.meta?.hideNavbar" />
-    <router-view />
+    <div class="main-content">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -37,4 +39,17 @@ export default {
 </script>
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+}
+.app-container {
+  flex-direction: column;
+  align-items: center;     
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
 </style>
