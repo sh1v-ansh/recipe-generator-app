@@ -63,7 +63,7 @@ const fetchRecipes = async (tag = '') => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        pageSize: 9,
+        pageSize: 18,
         tag: tag
       }),
     });

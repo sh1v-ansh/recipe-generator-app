@@ -21,7 +21,7 @@ app.use(cors())
 
 */
 app.post('/api/recipes/fetch-any', async (req, res) => {
-  const { pageSize = 9, lastVisibleId, tag } = req.body;
+  const { pageSize = 18, lastVisibleId, tag } = req.body;
   const tagFields = [
     "vegetarian", "vegan", "gluten-free", "diabetic", "kosher",
     "low-carb", "low-protein", "low-fat", "low-calorie", "high-protein", "high-calcium",
