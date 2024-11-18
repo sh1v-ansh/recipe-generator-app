@@ -25,7 +25,7 @@
     <RecipeCard
       v-for="recipe in paginatedRecipes"
       :key="recipe.id"
-      :title="recipe.title"
+      :title="recipe.name"
       :description="recipe.description"
       :image="recipe.image"
       :tags="recipe.tags"
@@ -51,6 +51,37 @@ import { reactive, ref, computed } from 'vue';
 import RecipeCard from './components/RecipeCard.vue';
 import TabWrapper from './components/TabWrapper.vue';
 
+
+const recipes = reactive([]); 
+const fetchedRecipes = ref([]);
+const loading = ref(false);
+
+const fetchRecipes = async (tag = '') => {
+  loading.value = true;
+  try {
+    const response = await fetch('http://localhost:3000/api/recipes/fetch-any', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pageSize: 9,
+        tag: tag
+      }),
+    });
+    const data = await response.json();
+
+    console.log('Fetched Recipes:', data.recipes); 
+    
+    recipes.splice(0, recipes.length, ...data.recipes || []);
+  } catch (error) {
+    console.error('Error fetching recipes:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+//fetchRecipes();
+
+
 const filterState = reactive({
   Allergens: {
     Gluten: false,
@@ -71,8 +102,8 @@ const filterState = reactive({
     Dessert: false,
   },
   Nutrition: {
-    'High Protein': false,
-    'High Carbs': false,
+    'high-protein': false,
+    'low-carb': false,
   }
 });
 
@@ -90,7 +121,7 @@ const toggleDropdown = (category: string) => {
 const selectedFilters = reactive<string[]>([]);
 
 const updateSelectedFilters = (category: string, filter: string, isSelected: boolean) => {
-  const filterKey = `${category}: ${filter}`;
+  const filterKey = `${filter}`;
   if (isSelected) {
     if (!selectedFilters.includes(filterKey)) selectedFilters.push(filterKey);
   } 
@@ -101,7 +132,9 @@ const updateSelectedFilters = (category: string, filter: string, isSelected: boo
   
   /***Integration with the backend; use selectedFilters to figure out filters are activated,
   check for formatting */
-  console.log("All selected filters:", selectedFilters);
+  console.log("All selected filters:", selectedFilters[0]);
+
+  fetchRecipes(selectedFilters[0])
 };
 
 //Checker for the All button to determine if active
@@ -125,12 +158,6 @@ const resetFilters = () => {
   console.log("All selected filters:", selectedFilters);
 };
  
-//Example recipe data, **Integration with backend; include api in this
-//Ignore image for now...
-const recipes = reactive([
-  { id: 1, title: 'Spaghetti Carbonara', description: 'A classic Italian pasta dish.', image: 'carbonara.jpg', tags: ['Pasta', 'Dinner', 'Italian'] },
-]);
-
 
 //Pagination state
 const currentPage = ref(1);
@@ -154,6 +181,10 @@ const changePage = (page: number) => {
 const viewRecipe = (recipeId: number) => {
   console.log(`Viewing recipe with ID: ${recipeId}`);
 };
+
+
+ fetchRecipes();
+
 
 </script>
 
