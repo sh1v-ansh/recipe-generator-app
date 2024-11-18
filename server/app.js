@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 const cors = require('cors')
 const serviceAccount = require('./service_key.json')
 
-// Initialize Firebase Admin
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -13,6 +12,14 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
+
+/* Endpoint to fetch 9 data points with pagination from the database
+
+   In the request body, one can add the optional  "tag" to the request body 
+   in which filtering by said tag will occur
+
+
+*/
 app.post('/api/recipes/fetch-any', async (req, res) => {
   const { pageSize = 9, lastVisibleId, tag } = req.body;
   const tagFields = [
