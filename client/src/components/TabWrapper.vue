@@ -87,7 +87,6 @@ const toggleTabState = (key: string) => {
 
 .dropdown-menu-container {
   position: relative;
-  
 }
 
 .dropdown-menu {
@@ -95,7 +94,7 @@ const toggleTabState = (key: string) => {
   width: 100%; 
   background-color: #f3efe6;
   border-radius: 24px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   z-index: 1000; 
 }
 
@@ -105,8 +104,8 @@ const toggleTabState = (key: string) => {
   justify-content: space-between;
   color: #333;
   background-color: #f3efe6;
-  text-decoration: none;
   border-radius: 24px;
+  text-decoration: none;
   width: 100%;
 
 }

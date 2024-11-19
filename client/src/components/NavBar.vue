@@ -19,7 +19,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 .navBar {
   display: flex;
@@ -43,6 +43,7 @@ export default {
 .logo-text {
   margin-left: 8px;
   font-size: 13px;
+  font-weight: bold;
   margin-top: 0;
   margin-bottom: 0;
   padding: 0;

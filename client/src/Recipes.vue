@@ -84,22 +84,30 @@ const fetchRecipes = async (tag = '') => {
 
 const filterState = reactive({
   Allergens: {
-    Gluten: false,
+    Wheat: false,
     Dairy: false,
     Nuts: false,
     Shellfish: false,
+    Soy: false,
+    Fish: false,
+    Peanuts: false,
+    Eggs: false,
   },
   Diet: {
     Keto: false,
     Paleo: false,
     Vegetarian: false,
     Vegan: false,
+    Pescatarian: false,
+    Raw: false,
+
   },
   'Meal Category': {
     Breakfast: false,
     Lunch: false,
     Dinner: false,
     Dessert: false,
+    Snack: false,
   },
   Nutrition: {
     'high-protein': false,

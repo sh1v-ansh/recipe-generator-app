@@ -20,6 +20,7 @@
     <div class="main-content">
       <router-view />
     </div>
+    <FooterBar v-if="!$route.meta?.hideFooterbar" />
   </div>
 </template>
 
@@ -27,6 +28,7 @@
 import Recipe from "./components/Recipe.vue";
 import RecipeFilter from "./components/Filter.vue";
 import NavBar from "./components/NavBar.vue";
+import FooterBar from "./components/FooterBar.vue";
 //import axios from "axios";
 
 export default {
@@ -34,6 +36,7 @@ export default {
     NavBar,
     Recipe,
     RecipeFilter,
+    FooterBar,
   },
 };
 </script>
