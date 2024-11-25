@@ -9,7 +9,7 @@
   <div class="category-container">
     <button 
       class="all-button" 
-      :class="{ active: isAllActive }"
+      :class="{ isAllActive }"
       @click="resetFilters"
     > 
       All
@@ -277,6 +277,7 @@ h1 {
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .pagination button {

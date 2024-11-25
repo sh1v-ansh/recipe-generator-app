@@ -39,6 +39,11 @@ overflow: hidden;
 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.recipe-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 
 .recipe-image {
 width: 100%;
