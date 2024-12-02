@@ -9,13 +9,44 @@
         <li><router-link to="/chefs" class="hover-link" active-class="router-link-active">CHEFS</router-link></li>
       </ul>
     </div>
-    <img src="../assets/default_profile.jpg" alt="Profile" class="profile-icon"/>
+    <div class="profile-dropdown">
+      <img
+        src="../assets/default_profile.jpg"
+        alt="Profile"
+        class="profile-icon"
+        @click="toggleDropdown"
+      />
+      <ul v-if="isDropdownOpen" class="dropdown-menu">
+        <li @click="goToProfile">Profile</li>
+        <li @click="goToSettings">Settings</li>
+        <li @click="logout">Logout</li>
+      </ul>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "NavBar",
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const isDropdownOpen = ref(false);
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const goToProfile = () => {
+  console.log('Navigating to Profile...');
+  // Add Vue Router navigation: this.$router.push('/profile');
+};
+
+const goToSettings = () => {
+  console.log('Navigating to Settings...');
+  // Add Vue Router navigation: this.$router.push('/settings');
+};
+
+const logout = () => {
+  console.log('Logging out...');
+  // Add logout logic here
 };
 </script>
 
@@ -108,12 +139,52 @@ export default {
   background-color: #EE6352;
   transform: scaleX(1);
 }
+.profile-dropdown {
+  position: relative;
+  margin-right: 1%;
+}
+
 .profile-icon {
   width: 30px;
   height: 30px;
-  border-radius: 50%; 
-  margin-right: 1%; 
-  cursor: pointer; 
-  object-fit: cover; 
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.profile-icon:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 35px; 
+  right: 0;
+  background-color: #F0EBE1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 150px;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Light gray border */
+}
+
+.dropdown-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-menu li:hover {
+  background-color: rgba(159, 220, 38, 0.3);
+}
+
+.dropdown-menu li:last-child {
+  border-top: 1px solid #ddd; 
+}
+
 </style>

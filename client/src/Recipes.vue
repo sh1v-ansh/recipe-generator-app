@@ -56,6 +56,7 @@ const recipes = reactive([]);
 const fetchedRecipes = ref([]);
 const loading = ref(false);
 
+
 const fetchRecipes = async (tag = '') => {
   loading.value = true;
   try {
