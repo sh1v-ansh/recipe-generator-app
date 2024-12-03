@@ -38,10 +38,10 @@ const router = useRouter();
 
 const chef = ref(null);
 
-// Function to fetch the chef data dynamically based on profileId
+//Function to fetch the chef data dynamically based on profileId
 const fetchChefData = async (profileId: string) => {
   try {
-    // Replace with actual API or mock data fetch
+    //Replace with actual API or mock data fetch
     const mockData = {
       'isabella-russo': {
         name: 'Isabella Russo',
@@ -84,7 +84,6 @@ watch(() => route.params.profileId, (newProfileId) => {
   fetchChefData(newProfileId);
 });
 
-
 onMounted(() => {
   const profileId = route.params.profileId as string;
   fetchChefData(profileId);
@@ -101,7 +100,7 @@ const viewRecipe = (recipeId: number) => {
 .title-introduction {
   display: flex;
   align-items: center;
-  gap: 20px; /* Adjust the gap between the title and introduction */
+  gap: 20px; 
 }
 .about-section{
   display: flex;
@@ -137,7 +136,7 @@ const viewRecipe = (recipeId: number) => {
 }
 
 .chef-signature {
-  font-family: 'Dancing Script', cursive; /* Ensure the first value is 'Dancing Script' */
+  font-family: 'Dancing Script', cursive;
   font-size: 21px;
   letter-spacing: 0.21px;
   color: #262522;
