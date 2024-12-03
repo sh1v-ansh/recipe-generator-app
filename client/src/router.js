@@ -2,12 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Recipes from './Recipes.vue';
 import RecipeGenerator from './RecipeGenerator.vue';
 import Chefs from './Chefs.vue';
+import ChefProfile from './components/ChefProfile.vue';
 
 const routes = [
     { path: '/', redirect: '/recipes' }, //Default page
     { path: '/recipes', component: Recipes },
     { path: '/recipe-generator', component: RecipeGenerator },
     { path: '/chefs', component: Chefs },
+    { path: '/chefs/:profileId', component: ChefProfile, props: true },
 ];
 
 const router = createRouter({
