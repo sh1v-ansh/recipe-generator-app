@@ -27,6 +27,7 @@ import nutsIcon from '../assets/icons/nuts.png';
 import shellfishIcon from '../assets/icons/shellfish.png';
 import soyIcon from '../assets/icons/soy.png';
 import fishIcon from '../assets/icons/fish.png';
+import diabeticIcon from '../assets/icons/diabetic.png'
 import peanutsIcon from '../assets/icons/peanuts.png';
 import eggsIcon from '../assets/icons/eggs.png';
 import ketoIcon from '../assets/icons/keto.png';
@@ -55,6 +56,7 @@ const iconMap = {
   Shellfish: shellfishIcon,
   Soy: soyIcon,
   Fish: fishIcon,
+  Diabetic: diabeticIcon,
   Peanuts: peanutsIcon,
   Eggs: eggsIcon,
   Keto: ketoIcon,

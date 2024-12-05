@@ -98,6 +98,7 @@ const filterState = reactive({
     Keto: false,
     Paleo: false,
     Vegetarian: false,
+    Diabetic: false,
     Vegan: false,
     Pescatarian: false,
   },
