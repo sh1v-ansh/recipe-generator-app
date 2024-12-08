@@ -36,7 +36,7 @@ const goToMealPlanGenerator = () => {
 router.push('/meal-plan');
 };
 
-const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 </script>
 
 <style scoped>

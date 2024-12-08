@@ -50,20 +50,21 @@ const viewRecipe = () => {
 };
 
 const iconMap = {
-  Wheat: wheatIcon,
-  Dairy: dairyIcon,
-  Nuts: nutsIcon,
-  Shellfish: shellfishIcon,
-  Soy: soyIcon,
-  Fish: fishIcon,
-  Diabetic: diabeticIcon,
-  Peanuts: peanutsIcon,
-  Eggs: eggsIcon,
-  Keto: ketoIcon,
-  Paleo: paleoIcon,
-  Vegetarian: vegetarianIcon,
-  Vegan: veganIcon,
-  Pescatarian: pescatarianIcon,
+  wheat: wheatIcon,
+  dairy: dairyIcon,
+  nuts: nutsIcon,
+  shellfish: shellfishIcon,
+  soy: soyIcon,
+  fish: fishIcon,
+  diabetic: diabeticIcon,
+  "low-carb": diabeticIcon,
+  peanuts: peanutsIcon,
+  eggs: eggsIcon,
+  keto: ketoIcon,
+  paleo: paleoIcon,
+  vegetarian: vegetarianIcon,
+  vegan: veganIcon,
+  pescatarian: pescatarianIcon,
 };
 
 </script>
