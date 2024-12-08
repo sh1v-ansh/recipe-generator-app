@@ -34,12 +34,6 @@ app.post('/api/meal-plan/create', async (req, res) => {
 
 
 async function fetchFilteredRecipes(filters) {
-  const tagFields = [
-    "vegetarian", "vegan", "gluten-free", "diabetic", "kosher",
-    "low-carb", "low-protein", "low-fat", "low-calorie", "high-protein", "high-calcium",
-    "egg-free", "lactose", "nuts", "shellfish"
-  ];
-
   try {
     let query = db.collection("recipes");
 
@@ -102,19 +96,6 @@ function randomChoice(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
-
-function filterRecipes(recipes, filters) {
-  if (!filters || Object.keys(filters).length === 0) return recipes; 
-
-  return recipes.filter(recipe => {
-
-    return Object.keys(filters).every(key => {
-      if (filters[key] === undefined) return true; 
-      return recipe[key] === filters[key]; 
-    });
-  });
-}
-
 
 
 /* Endpoint to fetch 9 data points with pagination from the database
