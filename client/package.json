@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "firebase": "^11.0.2",
+    "firebase-tools": "^13.27.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },

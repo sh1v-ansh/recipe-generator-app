@@ -29,6 +29,7 @@ import Recipe from "./components/Recipe.vue";
 import RecipeFilter from "./components/Filter.vue";
 import NavBar from "./components/NavBar.vue";
 import FooterBar from "./components/FooterBar.vue";
+import GeneratedRecipes from './GeneratedRecipes.vue';
 //import axios from "axios";
 
 export default {
@@ -37,6 +38,7 @@ export default {
     Recipe,
     RecipeFilter,
     FooterBar,
+    GeneratedRecipes,
   },
 };
 </script>
@@ -52,7 +54,7 @@ html, body {
   flex-direction: column;
   align-items: center;     
   justify-content: flex-start;
-  min-height: 100vh;
+  min-height: 95vh;
 }
 
 </style>

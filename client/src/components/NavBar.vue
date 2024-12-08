@@ -21,11 +21,18 @@
         <li @click="logout">Logout</li>
       </ul>
     </div>
+    <button @click="handleAuth" class="btn-login">
+      {{ isLoggedIn ? "Log Out" : "Log In" }}
+    </button>
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { ref } from 'vue';
+
+import { ref, onMounted } from 'vue';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 const isDropdownOpen = ref(false);
 
@@ -43,7 +50,36 @@ const logout = () => {
   console.log('Logging out...');
   // Add logout logic here
 };
+
+const isLoggedIn = ref(false);
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    isLoggedIn.value = !!user; // Update `isLoggedIn` based on user presence
+  });
+});
+
+const handleAuth = async () => {
+  if (isLoggedIn.value) {
+    try {
+      await signOut(auth);
+      console.log("User logged out");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  } else {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      console.log("User logged in");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  }
+};
 </script>
+
+
 
 <style scoped>
 
@@ -180,6 +216,21 @@ const logout = () => {
 
 .dropdown-menu li:last-child {
   border-top: 1px solid #ddd; 
+}
+
+.btn-login {
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #357ae8;
 }
 
 </style>
