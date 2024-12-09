@@ -14,7 +14,14 @@ app.use(express.json());
 app.use(cors())
 
 app.post('/api/meal-plan/create', async (req, res) => {
-  const { filters } = req.body;
+  const {uid} = req.body;
+  const response = await fetch(`http://localhost:3000/api/users/filters?uid=${uid}`);;
+
+
+  const filters = response.json();
+  
+  
+  
 
   try {
     const recipes = await fetchFilteredRecipes(filters);

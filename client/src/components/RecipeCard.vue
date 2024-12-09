@@ -43,7 +43,7 @@ defineProps({
     description: String,
     image: String,
     tags: Array,
-    recipeId: Number,
+    recipeId: String,
 });
 
 const emit = defineEmits(['view-recipe']);

@@ -18,7 +18,7 @@
   
 <script setup>
 defineProps({
-    profileId: Number,
+    profileId: String,
     name: String,
     description: String,
     background: String, //Background image for the card
