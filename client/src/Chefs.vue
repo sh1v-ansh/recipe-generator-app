@@ -14,6 +14,7 @@
         :description="chef.description"
         :background="chef.background"
         :profilePicture="chef.profilePicture"
+        @click.native="navigateToProfile(chef.profileId)"
 
       />
     </div>
@@ -45,17 +46,29 @@
 
 <script setup lang="ts">
 import ProfileCard from './components/ProfileCard.vue';
-import { reactive, computed, ref } from 'vue';
+import { reactive, computed, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const chefs = reactive([
-  { profileId: 1, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef. Follow me for more content and interesting stuff.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 2, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 3, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 4, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 5, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 6, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
-  { profileId: 7, name: 'Chef Gordon Ramsay', description: 'World-renowned Michelin-star chef.', background: 'efinen.jpg', profilePicture: 'gordon-ramsay.jpg' },
+  {
+    profileId: 'isabella-russo',
+    name: 'Isabella Russo',
+    description: 'An Italian chef with a passion for fresh ingredients...',
+    background: 'efinen.jpg',
+    profilePicture: 'isabella-russo.jpg',
+  },
+  {
+    profileId: 'gordon-ramsay',
+    name: 'Gordon Ramsay',
+    description: 'World-renowned Michelin-star chef. Follow me for more content and interesting stuff.',
+    background: 'efinen.jpg',
+    profilePicture: 'gordon-ramsay.jpg',
+  },
 ]);
+
+//add fetch profiles
 
 const currentPage = ref(1);
 const profilesPerPage = 6; //Change as needed
@@ -80,6 +93,10 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value += 1;
   }
+};
+
+const navigateToProfile = (profileId: string) => {
+  router.push(`/chefs/${profileId}`);
 };
 
 </script>
@@ -123,7 +140,7 @@ h1 {
 
 .profile-card-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+  grid-template-columns: repeat(3, 1fr); 
   gap: 20px;
   padding: 20px;
 }

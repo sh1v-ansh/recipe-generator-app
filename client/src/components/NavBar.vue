@@ -18,7 +18,9 @@
       />
       <ul v-if="isDropdownOpen" class="dropdown-menu">
         <li @click="goToProfile">Profile</li>
+
         <li @click="goToPreferences">Preferences</li>
+
         <li @click="logout">Logout</li>
       </ul>
     </div>
@@ -49,10 +51,13 @@ const goToProfile = () => {
   // Add Vue Router navigation: this.$router.push('/profile');
 };
 
+
 const goToPreferences = () => {
   console.log('Navigating to Preferences...');
   router.push('/preferences')
 };
+=======
+
 
 const logout = () => {
   console.log('Logging out...');
