@@ -177,32 +177,41 @@ app.post('/api/recipes/fetch-any', async (req, res) => {
 
 
 app.post('/api/users/signin', async (req, res) => {
-  const { uid, email, displayName } = req.body;
-
-  if (!uid || !email) {
-    return res.status(400).json({ error: 'UID and email are required' });
+  const { uid, filters } = req.body;
+  if (!uid) {
+    return res.status(400).json({ error: 'UID required' });
   }
 
   try {
     const userRef = db.collection('users').doc(uid);
     const userDoc = await userRef.get();
 
-    if (userDoc.exists) {
 
-      await userRef.update({
+    if (userDoc.exists) {
+      const updateData = {
         lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
-      });
-      console.log(`User ${uid} signed in, last sign-in updated.`);
+      };
+
+
+      if (filters && typeof filters === 'object') {
+        updateData.filters = filters;
+      }
+
+      await userRef.update(updateData);
+      console.log(`User ${uid} signed in, last sign-in and filters updated.`);
     } else {
 
-      await userRef.set({
+      const userData = {
         uid,
-        email,
-        displayName,
-        filters: {},
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      };
+
+      if (filters && typeof filters === 'object') {
+        userData.filters = filters;
+      }
+
+      await userRef.set(userData);
       console.log(`User ${uid} created and signed in.`);
     }
 
@@ -212,6 +221,40 @@ app.post('/api/users/signin', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+app.get('/api/users/filters', async (req, res) => {
+  const { uid } = req.query;
+
+
+  if (!uid) {
+    return res.status(400).json({ error: 'UID is required' });
+  }
+
+  try {
+    const userRef = db.collection('users').doc(uid);
+    const userDoc = await userRef.get();
+
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+
+   
+      const filters = userData.filters || {};
+
+      console.log(`Filters for user ${uid} retrieved successfully.`);
+      return res.status(200).json({ filters });
+    } else {
+
+      return res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error retrieving user filters:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 
 app.post('/api/users/get-recipes', async (req, res) => {
