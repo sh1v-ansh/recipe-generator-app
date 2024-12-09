@@ -5,17 +5,13 @@
     <div class="nav-center">
       <ul class="nav-list">
         <li><router-link to="/recipes" class="hover-link" active-class="router-link-active">RECIPES</router-link></li>
-        <li><router-link to="/recipe-generator" class="hover-link" active-class="router-link-active">RECIPE GENERATOR</router-link></li>
+        <li><router-link to="/recipe-generator" class="hover-link" active-class="router-link-active">RECIPE
+            GENERATOR</router-link></li>
         <li><router-link to="/chefs" class="hover-link" active-class="router-link-active">CHEFS</router-link></li>
       </ul>
     </div>
     <div class="profile-dropdown">
-      <img
-        src="../assets/default_profile.jpg"
-        alt="Profile"
-        class="profile-icon"
-        @click="toggleDropdown"
-      />
+      <img src="../assets/default_profile.jpg" alt="Profile" class="profile-icon" @click="toggleDropdown" />
       <ul v-if="isDropdownOpen" class="dropdown-menu">
         <li @click="goToProfile">Profile</li>
 
@@ -32,7 +28,6 @@
 
 
 <script setup lang="ts">
-
 import { ref, onMounted } from 'vue';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
@@ -40,64 +35,72 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+
 const isDropdownOpen = ref(false);
+const isLoggedIn = ref(false);
+const user = ref<any>(null);
+
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
+
 const goToProfile = () => {
   console.log('Navigating to Profile...');
-  // Add Vue Router navigation: this.$router.push('/profile');
+  router.push('/profile');
 };
 
 
 const goToPreferences = () => {
   console.log('Navigating to Preferences...');
-  router.push('/preferences')
+  router.push('/preferences');
 };
 
 
-
-const logout = () => {
-  console.log('Logging out...');
-  // Add logout logic here
+const logout = async () => {
+  try {
+    await signOut(auth);
+    localStorage.removeItem('authToken');
+    isLoggedIn.value = false;
+    user.value = null;
+    console.log('User logged out');
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
 };
 
-const isLoggedIn = ref(false);
-
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    isLoggedIn.value = !!user; // Update `isLoggedIn` based on user presence
-  });
-});
 
 const handleAuth = async () => {
-  if (isLoggedIn.value) {
-    try {
-      await signOut(auth);
-      console.log("User logged out");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const token = localStorage.getItem('authToken');
+
+  if (token) {
+
+    logout();
   } else {
+
     const provider = new GoogleAuthProvider();
+
     try {
-
       const result = await signInWithPopup(auth, provider);
+      const userData = result.user;
 
 
-      const user = result.user; 
+      const idToken = await userData.getIdToken();
 
 
-      const uid = user.uid;
+      localStorage.setItem('authToken', idToken);
 
+
+      isLoggedIn.value = true;
+      user.value = userData;
 
       const requestBody = {
-        uid
+        uid: userData.uid,
+        displayName: userData.displayName,
+        email: userData.email,
       };
 
- 
       const response = await fetch('http://localhost:3000/api/users/signin', {
         method: 'POST',
         headers: {
@@ -106,19 +109,34 @@ const handleAuth = async () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log("User logged in", response);
-
+      if (response.ok) {
+        const data = await response.json();
+        console.log('User logged in successfully', data);
+      } else {
+        console.error('Failed to log user in:', await response.text());
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
     }
   }
 };
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isLoggedIn.value = true;
+      user.value = user;
+    } else {
+      isLoggedIn.value = false;
+      user.value = null;
+    }
+  });
+});
 </script>
 
 
 
 <style scoped>
-
 .navBar {
   display: flex;
   align-items: center;
@@ -193,8 +211,9 @@ const handleAuth = async () => {
 .router-link-active {
   color: black;
   opacity: 1;
-  
+
 }
+
 .router-link-active::after {
   content: "";
   opacity: 1;
@@ -206,6 +225,7 @@ const handleAuth = async () => {
   background-color: #EE6352;
   transform: scaleX(1);
 }
+
 .profile-dropdown {
   position: relative;
   margin-right: 1%;
@@ -226,7 +246,7 @@ const handleAuth = async () => {
 
 .dropdown-menu {
   position: absolute;
-  top: 35px; 
+  top: 35px;
   right: 0;
   background-color: #F0EBE1;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -237,7 +257,8 @@ const handleAuth = async () => {
   padding: 0;
   margin: 0;
   min-width: 150px;
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Light gray border */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Light gray border */
 }
 
 .dropdown-menu li {
@@ -251,7 +272,7 @@ const handleAuth = async () => {
 }
 
 .dropdown-menu li:last-child {
-  border-top: 1px solid #ddd; 
+  border-top: 1px solid #ddd;
 }
 
 .btn-login {
@@ -268,5 +289,4 @@ const handleAuth = async () => {
 .btn-login:hover {
   background-color: #357ae8;
 }
-
 </style>
