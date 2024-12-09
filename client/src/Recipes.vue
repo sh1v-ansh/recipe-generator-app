@@ -34,14 +34,14 @@
     />
   </div>
   <div class="pagination">
-    <button
-      v-for="page in totalPages"
-      :key="page"
-      :class="{ active: currentPage.value === page }"
-      @click="changePage(page)"
-    >
-      {{ page }}
-    </button>
+      <button
+        v-for="page in Array.from({ length: totalPages }, (_, i) => i + 1)"
+        :key="page"
+        :class="['pagination-button', { active: currentPage.value === page }]"
+        @click="changePage(page)"
+      >
+    {{ page }}
+  </button>
   </div>
 </template>
 <script setup lang="ts">
@@ -170,7 +170,10 @@ const resetFilters = () => {
 const currentPage = ref(1);
 const recipesPerPage = 9;
 
-const totalPages = computed(() => Math.ceil(recipes.length / recipesPerPage));
+const totalPages = computed(() => {
+  const pages = Math.ceil(recipes.length / recipesPerPage);
+  return pages;
+});
 
 //Paginated recipes
 const paginatedRecipes = computed(() => {
@@ -280,21 +283,23 @@ h1 {
 }
 
 .pagination button {
-  padding: 10px 15px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
+  border-radius: 8px;
+  background-color: rgba(44, 44, 44, 1);
+  background: transparent;
+  color: #1E1E1E;
   cursor: pointer;
 }
 
 .pagination button.active {
-  background-color: #ee6352;
-  color: white;
-  border-color: #ee6352;
+  background-color: #007bff; /* Highlight color for the active page */
+  color: white; /* Text color for the active page */
+  border: none; /* Remove border if desired */
+  font-weight: bold; /* Emphasize the active button */
+  cursor: default; /* Change cursor to indicate non-clickable */
 }
 
 .pagination button:hover {
-  background-color: #d9534f;
+  background-color: rgba(44, 44, 44, 0.50);
   color: white;
 }
 
