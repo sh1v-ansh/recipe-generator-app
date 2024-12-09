@@ -234,40 +234,6 @@ app.post('/api/users/signin', async (req, res) => {
 });
 
 
-app.get('/api/users/filters', async (req, res) => {
-  const { uid } = req.query;
-
-
-  if (!uid) {
-    return res.status(400).json({ error: 'UID is required' });
-  }
-
-  try {
-    const userRef = db.collection('users').doc(uid);
-    const userDoc = await userRef.get();
-
-
-    if (userDoc.exists) {
-      const userData = userDoc.data();
-
-   
-      const filters = userData.filters || {};
-
-      console.log(`Filters for user ${uid} retrieved successfully.`);
-      return res.status(200).json({ "tags":filters });
-    } else {
-
-      return res.status(404).json({ error: 'User not found' });
-    }
-  } catch (error) {
-    console.error('Error retrieving user filters:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-
-
-
 app.post('/api/users/get-recipes', async (req, res) => {
   const { uid } = req.body; 
 
