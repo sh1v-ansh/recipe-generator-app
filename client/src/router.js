@@ -14,13 +14,9 @@ const routes = [
     { path: '/recipes', component: Recipes },
     { path: '/recipe-generator', component: RecipeGenerator },
     { path: '/chefs', component: Chefs },
-
+    
     { path: '/meal-plan', component: GeneratedRecipes },
     { path: '/preferences', component: Preferences },
-
-
-    {path: '/meal-plan', component: GeneratedRecipes},
-
     { path: '/chefs/:profileId', component: ChefProfile, props: true },
 
 
