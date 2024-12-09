@@ -42,8 +42,10 @@ app.post('/api/meal-plan/create', async (req, res) => {
 
 async function fetchFilteredRecipes(filters) {
 
-  const tagFields = ['vegetarian', 'vegan', 'low-carb', 'paleo', 'keto', 'pescatarian'];
-
+  const tagFields = ['vegetarian', 'vegan', 'low-carb', 'paleo', 'keto', 'pescatarian',
+    'wheat', 'dairy', 'nuts', 'shellfish', 'soy', 'fish', 'peanuts', 'eggs',
+    'high-protein'
+  ];
 
   try {
     let query = db.collection("recipes");
