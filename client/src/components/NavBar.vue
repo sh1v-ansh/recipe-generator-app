@@ -20,8 +20,8 @@
         <li @click="handleAuth">Logout</li>
       </ul>
     </div>
-    <button v-else @click="handleAuth" class="btn-login">
-      Log In
+    <button @click="handleAuth" class="btn-login">
+      {{ isLoggedIn ? "Log Out" : "Log In" }}
     </button>
   </div>
 </template>
