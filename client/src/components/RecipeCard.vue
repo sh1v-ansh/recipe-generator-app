@@ -2,7 +2,7 @@
     <div class="recipe-card">
         <img src="https://picsum.photos/id/102/300/200" alt="Recipe Image" class="recipe-image" />
         <img
-        v-for="(tag, index) in tags.filter(tag => tag !== 'low-carb' && tag !== 'lactose' && tag !== 'high-protein')"
+        v-for="(tag, index) in tags.filter(tag => tag !== 'lactose' && tag !== 'high-protein')"
         :key="tag"
         :src="iconMap[tag]"
         :alt="`Icon for ${tag}`"
@@ -43,7 +43,7 @@ defineProps({
     description: String,
     image: String,
     tags: Array,
-    recipeId: Number,
+    recipeId: String,
 });
 
 const emit = defineEmits(['view-recipe']);
@@ -63,6 +63,7 @@ const iconMap = {
   eggs: eggsIcon,
   keto: ketoIcon,
   paleo: paleoIcon,
+  "low-carb": diabeticIcon,
   vegetarian: vegetarianIcon,
   vegan: veganIcon,
   pescatarian: pescatarianIcon,
