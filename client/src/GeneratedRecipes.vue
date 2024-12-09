@@ -35,6 +35,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import RecipeCard from '../src/components/RecipeCard.vue';
+import VueJwtDecode from "vue-jwt-decode";
 
 const router = useRouter();
 
@@ -50,12 +51,32 @@ const recipesForDay = ref([]);
 // Mock backend API response to demonstrate dynamic data handling
 const fetchRecipesForDays = async () => {
     try {
+
+        const token = localStorage.getItem("authToken");
+            let uid = '';
+
+        if (token) {
+            try {
+            const decodedToken = VueJwtDecode.decode(token);
+            console.log(decodedToken); // Decode the token
+            uid = decodedToken.user_id; // Access the user ID (uid)
+            console.log("User ID:", uid); // Print the user ID
+            } catch (error) {
+            console.error("Error decoding token:", error);
+            alert("Invalid auth token. Please log in again.");
+            return;
+            }
+        } else {
+         alert("You must be logged in to generate recipes!");
+            return;
+            }
+
         const response = await fetch('http://localhost:3000/generate-meal-plan', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ uid: "FcjaGlsgX8XoznstAi25JSiN1du2" }), // Sending the uid in the request body
+          body: JSON.stringify({ "uid": uid }), // Sending the uid in the request body
         });
 
         if (!response.ok) {
