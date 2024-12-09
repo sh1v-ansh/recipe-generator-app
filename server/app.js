@@ -20,7 +20,15 @@ app.post('/api/meal-plan/create', async (req, res) => {
 
   const filters = response.json();
   
-  
+  const allergens = [
+    'wheat', 'dairy', 'nuts', 'shellfish', 'soy', 'fish', 'peanuts', 'eggs'
+  ];
+
+  allergens.forEach((allergen) => {
+    if (filters.hasOwnProperty(allergen)) {
+      filters[allergen] = false;
+    }
+  });
   
 
   try {
