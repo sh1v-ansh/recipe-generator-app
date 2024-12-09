@@ -157,12 +157,12 @@ app.post('/api/recipes/fetch-any', async (req, res) => {
 });
 
 
-
 app.post('/api/users/signin', async (req, res) => {
-  const { uid, email, displayName } = req.body;
+  const { uid, email, displayName, preferences } = req.body;
 
-  if (!uid || !email) {
-    return res.status(400).json({ error: 'UID and email are required' });
+
+  if (!uid || !email || !preferences || typeof preferences !== 'object') {
+    return res.status(400).json({ error: 'UID, email, and valid preferences are required' });
   }
 
   try {
@@ -173,178 +173,52 @@ app.post('/api/users/signin', async (req, res) => {
 
       await userRef.update({
         lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
+        preferences, 
       });
-      console.log(`User ${uid} signed in, last sign-in updated.`);
+      console.log(`User ${uid} signed in, preferences updated.`);
     } else {
 
       await userRef.set({
         uid,
         email,
         displayName,
-        filters: {},
+        preferences, 
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
       });
-      console.log(`User ${uid} created and signed in.`);
+      console.log(`User ${uid} created with initial preferences and signed in.`);
     }
 
-    res.status(200).json({ message: 'User sign-in logged successfully' });
+    res.status(200).json({ message: 'User preferences logged successfully' });
   } catch (error) {
-    console.error('Error logging user sign-in:', error);
+    console.error('Error logging user preferences:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 
-app.post('/api/users/get-recipes', async (req, res) => {
-  const { uid } = req.body; 
+app.post('/api/users/filters', async (req, res) => {
+  const { uid } = req.body;
+
+
+  if (!uid) {
+    return res.status(400).json({ error: 'UID is required' });
+  }
 
   try {
-
     const userRef = db.collection('users').doc(uid);
     const userDoc = await userRef.get();
 
-    if (userDoc.exists) {
-
-      const userData = userDoc.data();
-      const recipeIds = userData.recipes || []; 
-
-      if (recipeIds.length === 0) {
-        return res.status(200).json({ message: 'No recipes found for this user', recipes: [] });
-      }
-
-      console.log(recipeIds);
-      
-      const recipesCollection = db.collection('recipes');
-      const recipesPromises = recipeIds.map(id => recipesCollection.doc(String(id)).get());
-      const recipeDocs = await Promise.all(recipesPromises);
-
-      const recipes = recipeDocs
-        .filter(doc => doc.exists)
-        .map(doc => ({ id: doc.id, ...doc.data() }));
-
-      res.status(200).json({ message: 'Recipes retrieved successfully', recipes });
-    } else {
-      res.status(404).json({ error: 'User not found' });
+    if (!userDoc.exists) {
+      return res.status(404).json({ error: 'User not found' });
     }
+
+    const userData = userDoc.data();
+    const filters = userData.filters || {}; 
+    res.status(200).json({ uid, filters });
   } catch (error) {
-    console.error('Error fetching user recipes:', error);
+    console.error('Error retrieving user filters:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-
-class RecipeQueryPaginator {
-  constructor(pageSize = 10) {
-    this.pageSize = pageSize;
-    this.lastDoc = null;
-  }
-
-  async compositeQuery(conditions) {
-    let query = db.collection('recipes');
-
-    // Separate in-memory and Firestore filters
-    const inMemoryFilters = [];
-    const firestoreFilters = [];
-
-    conditions.forEach(condition => {
-      const { field, op, value, field_type } = condition;
-
-      if (field === 'nutrition' && field_type === 'calories') {
-        inMemoryFilters.push(condition);
-      } else {
-        query = query.where(field, op, value);
-      }
-    });
-
-    // Adjust limit based on in-memory filtering needs
-    const limit = inMemoryFilters.length > 0 ? this.pageSize * 2 : this.pageSize;
-    query = query.limit(limit);
-
-    // Apply pagination if needed
-    if (this.lastDoc) {
-      query = query.startAfter(this.lastDoc);
-    }
-
-    // Execute query
-    const snapshot = await query.get();
-    const docs = snapshot.docs;
-    const matchingRecipes = [];
-
-    // Process results
-    for (const doc of docs) {
-      const recipe = doc.data();
-      let matchesAll = true;
-
-      for (const filter of inMemoryFilters) {
-        if (filter.field_type === 'calories') {
-          if (!recipe.nutrition || recipe.nutrition.length === 0) {
-            matchesAll = false;
-            break;
-          }
-
-          const calories = recipe.nutrition[0];
-          if (filter.op === '<=' && calories > filter.value) {
-            matchesAll = false;
-            break;
-          }
-        }
-      }
-
-      if (matchesAll) {
-        matchingRecipes.push(recipe);
-        if (matchingRecipes.length === this.pageSize) break;
-      }
-    }
-
-    // Update pagination state
-    if (docs.length > 0) {
-      this.lastDoc = docs[docs.length - 1];
-    }
-
-    return {
-      recipes: matchingRecipes.slice(0, this.pageSize),
-      hasMore: docs.length === limit
-    };
-  }
-
-  reset() {
-    this.lastDoc = null;
-  }
-}
-
-// Create a paginator instance
-const paginator = new RecipeQueryPaginator(5);
-
-// app.get('/test', (req, res) => {
-//   res.json({
-//     'this': 'is a test'
-//   })
-// })
-
-// Routes
-app.post('/api/recipes/search', async (req, res) => {
-  try {
-    const { conditions } = req.body;
-    console.log(conditions)
-    if (!conditions || !Array.isArray(conditions)) {
-      return res.status(400).json({ error: 'Invalid conditions format' });
-    }
-
-    const { recipes, hasMore } = await paginator.compositeQuery(conditions);
-    res.json({ recipes, hasMore });
-  } catch (error) {
-    console.error('Search error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-app.post('/api/recipes/reset-pagination', (req, res) => {
-  paginator.reset();
-  res.json({ message: 'Pagination reset successful' });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
