@@ -110,6 +110,7 @@ const iconMap = {
   justify-content: space-between; 
   padding: 15px;
   height: 100%; 
+  flex-grow:
 }
 
 .recipe-title {
@@ -134,7 +135,7 @@ const iconMap = {
   display: flex;
   justify-content: space-between; 
   align-items: center;
-  margin-top: auto; 
+  margin-top: 10px; 
   width: 100%; 
 }
 

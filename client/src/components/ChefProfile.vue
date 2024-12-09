@@ -50,7 +50,7 @@ const fetchChefData = async (profileId: string) => {
         description: 'An Italian chef with a passion for fresh ingredients...hr khw kw ekfjbwkjebfjkwbekfjbwkejfbkw efk wekfjbwej fkjw ejkf wke fjw ekjf wjef jwo efjo wejofnjwoenfjonwejof  f weofnwefbwoje f woeujfnwoe fweojfnw fojwnef',
         recipes: [
           {
-            id: 1,
+            id: 203889,
             title: 'Savory Herb-Infused Chicken',
             summary: 'Indulge in the rich and savory symphony...',
             image: 'path/to/recipe1.jpg',

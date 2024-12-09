@@ -9,7 +9,7 @@
         <li><router-link to="/chefs" class="hover-link" active-class="router-link-active">CHEFS</router-link></li>
       </ul>
     </div>
-    <div class="profile-dropdown">
+    <div class="profile-dropdown" v-if="isLoggedIn">
       <img
         src="../assets/default_profile.jpg"
         alt="Profile"
@@ -21,11 +21,11 @@
 
         <li @click="goToPreferences">Preferences</li>
 
-        <li @click="logout">Logout</li>
+        <li @click="handleAuth">Logout</li>
       </ul>
     </div>
-    <button @click="handleAuth" class="btn-login">
-      {{ isLoggedIn ? "Log Out" : "Log In" }}
+    <button v-else @click="handleAuth" class="btn-login">
+      Log In
     </button>
   </div>
 </template>
@@ -55,13 +55,6 @@ const goToProfile = () => {
 const goToPreferences = () => {
   console.log('Navigating to Preferences...');
   router.push('/preferences')
-};
-
-
-
-const logout = () => {
-  console.log('Logging out...');
-  // Add logout logic here
 };
 
 const isLoggedIn = ref(false);
@@ -238,7 +231,7 @@ const handleAuth = async () => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 15px;
   transition: background-color 0.3s;
 }
 
