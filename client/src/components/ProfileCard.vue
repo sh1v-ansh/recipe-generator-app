@@ -33,7 +33,7 @@ defineProps({
     width: 427px;
     height: 360px;
     flex-direction: column;
-    background-color: #fff;
+    background-color: #FFFBF2;
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -82,6 +82,7 @@ defineProps({
     font-size: 14px;
     color: #666;
     margin-bottom: 15px;
+    height: 42px;
 }
 
 .profile-footer {

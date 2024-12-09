@@ -10,8 +10,13 @@
         <li><router-link to="/chefs" class="hover-link" active-class="router-link-active">CHEFS</router-link></li>
       </ul>
     </div>
-    <div class="profile-dropdown">
-      <img src="../assets/default_profile.jpg" alt="Profile" class="profile-icon" @click="toggleDropdown" />
+    <div class="profile-dropdown" v-if="isLoggedIn">
+      <img
+        src="../assets/default_profile.jpg"
+        alt="Profile"
+        class="profile-icon"
+        @click="toggleDropdown"
+      />
       <ul v-if="isDropdownOpen" class="dropdown-menu">
         <li @click="goToProfile">Profile</li>
 
@@ -20,8 +25,8 @@
         <li @click="handleAuth">Logout</li>
       </ul>
     </div>
-    <button @click="handleAuth" class="btn-login">
-      {{ isLoggedIn ? "Log Out" : "Log In" }}
+    <button v-else @click="handleAuth" class="btn-login">
+      Log In
     </button>
   </div>
 </template>
@@ -173,6 +178,8 @@ onMounted(() => {
 
 .nav-list {
   list-style-type: none;
+  justify-content: center;
+  align-items: center;
   display: flex;
   gap: 20px;
   margin: 0;
@@ -235,6 +242,7 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  margin-left: 46.48px;
   cursor: pointer;
   object-fit: cover;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -283,6 +291,7 @@ onMounted(() => {
   border-radius: 4px;
   cursor: pointer;
   margin-right: 15px;
+  margin-bottom: 1.87px;
   transition: background-color 0.3s;
 }
 

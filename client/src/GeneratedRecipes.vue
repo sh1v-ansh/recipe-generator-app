@@ -40,7 +40,7 @@ import VueJwtDecode from "vue-jwt-decode";
 const router = useRouter();
 
 const goToMealPlanGenerator = () => {
-    router.push('/meal-plan');
+    fetchRecipesForDays();
 };
 
 const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
@@ -68,6 +68,7 @@ const fetchRecipesForDays = async () => {
             }
         } else {
          alert("You must be logged in to generate recipes!");
+            router.push('/recipe-generator');
             return;
             }
 

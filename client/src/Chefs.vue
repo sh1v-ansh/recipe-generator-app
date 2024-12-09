@@ -36,7 +36,7 @@
     </button>
     <button
       class="prev-next"
-      :disabled="currentPage.value === totalPages"
+      :disabled="currentPage.value === totalPages.value"
       @click="nextPage"
     >
       Next
@@ -82,6 +82,9 @@ const paginatedChefs = computed(() => {
 
 const changePage = (page: number) => {
   currentPage.value = page;
+  console.log('Current page:', currentPage.value);
+  console.log(totalPages.value);
+  console.log(page)
 };
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -163,7 +166,6 @@ h1 {
 
 .pagination button.active {
   background-color: #ee6352;
-  color: white;
   border-color: #ee6352;
 }
 

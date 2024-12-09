@@ -59,8 +59,11 @@
 
 <script setup lang="ts">
 import { reactive } from "vue";
+import { useRouter } from 'vue-router';
 
 import VueJwtDecode from "vue-jwt-decode";
+
+const router = useRouter();
 
 // Reactive state for preferences
 const preferences = reactive({
@@ -112,6 +115,7 @@ const submitPreferences = async () => {
     }
   } else {
     alert("You must be logged in to save your preferences.");
+    router.push('/recipes');
     return;
   }
 
@@ -174,6 +178,7 @@ const submitPreferences = async () => {
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #FFFBF2;
 }
 
 .tag {
@@ -205,7 +210,8 @@ const submitPreferences = async () => {
   background-color: #84b85c;
   border-radius: 12px;
   color: white;
-  font-size: 12px;
+  font-size: 13px;
+  width: 100px;
   font-weight: bold;
   padding: 4px 8px;
 }
@@ -224,11 +230,14 @@ const submitPreferences = async () => {
   cursor: pointer;
   transition: all 0.3s ease;
   color: black;
-  background-color: #fffbf2;
+  background-color: #f3efe6;
+  border: 1px solid rgb(192, 192, 192);
+  border: 
 }
 
 .preferences-option.active {
   background-color: #c4beae;
+  border: 1px solid rgb(192, 192, 192);
   color: black;
 }
 
@@ -246,7 +255,6 @@ const submitPreferences = async () => {
   font-size: 18px;
   font-weight: bold;
   padding: 12px 24px;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;

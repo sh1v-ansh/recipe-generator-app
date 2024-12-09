@@ -11,8 +11,8 @@
         curated recipe plan for the week.
       </p>
       <button class="generate-btn" @click="goToMealPlanGenerator">
-  Generate
-</button>
+        Generate
+      </button>
     </div>
   </div>
 </template>
@@ -42,6 +42,7 @@ const goToMealPlanGenerator = () => {
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #FFFBF2;
 }
 
 .meal-plan-header {

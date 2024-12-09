@@ -2,7 +2,7 @@
     <div class="recipe-card">
         <img src="https://picsum.photos/id/102/300/200" alt="Recipe Image" class="recipe-image" />
         <img
-        v-for="(tag, index) in tags.filter(tag => tag !== 'lactose' && tag !== 'high-protein')"
+        v-for="(tag, index) in tags.filter(tag => tag !== 'lactose' && tag !== 'high-protein' && !(tag === 'low-carb' && tags.includes('diabetic')))"
         :key="tag"
         :src="iconMap[tag]"
         :alt="`Icon for ${tag}`"
@@ -81,7 +81,7 @@ const iconMap = {
   border-radius: 24px;
   overflow: hidden;
   width: 100%;
-  height: 100%;
+  height: 394px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
