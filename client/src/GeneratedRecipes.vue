@@ -49,28 +49,32 @@ const recipesForDay = ref([]);
 
 // Mock backend API response to demonstrate dynamic data handling
 const fetchRecipesForDays = async () => {
-// Example backend response format
-const recipeDayMapping = {
-    MONDAY: [1, 2, 3],
-    TUESDAY: [4, 5, 1],
-    WEDNESDAY: [2, 3, 4],
-    THURSDAY: [5, 1, 2],
-    FRIDAY: [3, 4, 5],
-};
+    try {
+        const response = await fetch('http://localhost:3000/generate-meal-plan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uid: "FcjaGlsgX8XoznstAi25JSiN1du2" }), // Sending the uid in the request body
+        });
 
-// Example recipe data (replace with API fetch logic)
-const allRecipes = [
-    { recipeId: 1, title: 'Recipe 1', description: 'Delicious and easy.', tags: ['vegetarian', 'keto'] },
-    { recipeId: 2, title: 'Recipe 2', description: 'A delightful dish.', tags: ['paleo'] },
-    { recipeId: 3, title: 'Recipe 3', description: 'Healthy and tasty.', tags: ['vegan', 'high-protein'] },
-    { recipeId: 4, title: 'Recipe 4', description: 'Quick and simple.', tags: ['low-carb'] },
-    { recipeId: 5, title: 'Recipe 5', description: 'A seasonal favorite.', tags: ['vegetarian', 'nuts'] },
-];
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Error:', errorData.message);
+          alert(errorData.message);
+          return;
+        }
 
-// Map recipe IDs to recipe objects for each day
-recipesForDay.value = days.map((day) =>
-    recipeDayMapping[day].map((id) => allRecipes.find((recipe) => recipe.recipeId === id))
-);
+        // Get the meal plan from the backend response
+        const weeklyMealPlan = await response.json();
+
+        // Update recipesForDay with the data
+        recipesForDay.value = weeklyMealPlan;
+      } catch (error) {
+        console.error('Request failed:', error);
+        alert('There was an error generating the meal plan.');
+      }
+
 };
 
 // View recipe handler

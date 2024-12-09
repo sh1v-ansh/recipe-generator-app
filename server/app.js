@@ -17,17 +17,21 @@ app.use(cors())
 
 const buildQuery = (tags) => {
   let query = db.collection('recipes'); 
+  
   Object.keys(tags).forEach((tag) => {
-    if (tags[tag]) {
+    if (tags[tag] === true) {
+
       query = query.where(tag, '==', true);
+    } else if (tags[tag] === false) {
+
+      query = query.where(tag, '==', false);
     }
   });
+
   return query;
 };
 
-
-
-  function formatRecipe(recipe, uid) {
+function formatRecipe(recipe, uid) {
   
     const tags = [
       'vegetarian', 'vegan', 'low-carb', 'paleo', 'keto', 'pescatarian',
@@ -43,7 +47,7 @@ const buildQuery = (tags) => {
       "recipeId": uid,
       "title": recipe.name,
       "description" : recipe.description,
-      tags: trueTags
+      "tags": trueTags
     };
   
     // Remove all the individual tag properties from the new recipe object
