@@ -2,13 +2,14 @@
     <div class="recipe-card">
         <img src="https://picsum.photos/id/102/300/200" alt="Recipe Image" class="recipe-image" />
         <img
-            v-for="(tag, index) in tags"
-            :key="tag"
-            :src="iconMap[tag]"
-            :alt="`Icon for ${tag}`"
-            :style="{ right: `${index * 30}px`, zIndex: `${tags.length - index}` }"
-            class="recipe-icon"
-        />
+    v-for="(tag, index) in tags.filter(tag => tag !== 'low-carb' && tag !== 'lactose' && tag !== 'high-protein')"
+    :key="tag"
+    :src="iconMap[tag]"
+    :alt="`Icon for ${tag}`"
+    :style="{ right: `${index * 30}px`, zIndex: `${tags.length - index}` }"
+    class="recipe-icon"
+/>
+
         <div class="recipe-content">
             <h3 class="recipe-title">{{ title }}</h3>
             <p class="recipe-description">{{ description }}</p>
@@ -50,20 +51,20 @@ const viewRecipe = () => {
 };
 
 const iconMap = {
-  Wheat: wheatIcon,
-  Dairy: dairyIcon,
-  Nuts: nutsIcon,
-  Shellfish: shellfishIcon,
-  Soy: soyIcon,
-  Fish: fishIcon,
-  Diabetic: diabeticIcon,
-  Peanuts: peanutsIcon,
-  Eggs: eggsIcon,
-  Keto: ketoIcon,
-  Paleo: paleoIcon,
-  Vegetarian: vegetarianIcon,
-  Vegan: veganIcon,
-  Pescatarian: pescatarianIcon,
+  wheat: wheatIcon,
+  dairy: dairyIcon,
+  nuts: nutsIcon,
+  shellfish: shellfishIcon,
+  soy: soyIcon,
+  fish: fishIcon,
+  diabetic: diabeticIcon,
+  peanuts: peanutsIcon,
+  eggs: eggsIcon,
+  keto: ketoIcon,
+  paleo: paleoIcon,
+  vegetarian: vegetarianIcon,
+  vegan: veganIcon,
+  pescatarian: pescatarianIcon,
 };
 
 </script>
