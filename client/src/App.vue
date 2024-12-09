@@ -30,6 +30,7 @@ import RecipeFilter from "./components/Filter.vue";
 import NavBar from "./components/NavBar.vue";
 import FooterBar from "./components/FooterBar.vue";
 import GeneratedRecipes from './GeneratedRecipes.vue';
+import Preferences from './Preferences.vue';
 //import axios from "axios";
 
 export default {
@@ -39,6 +40,7 @@ export default {
     RecipeFilter,
     FooterBar,
     GeneratedRecipes,
+    Preferences,
   },
 };
 </script>

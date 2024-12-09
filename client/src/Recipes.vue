@@ -91,7 +91,6 @@ const filterState = reactive({
     Shellfish: false,
     Soy: false,
     Fish: false,
-    Peanuts: false,
     Eggs: false,
   },
   Diet: {

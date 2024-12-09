@@ -18,6 +18,9 @@
       />
       <ul v-if="isDropdownOpen" class="dropdown-menu">
         <li @click="goToProfile">Profile</li>
+
+        <li @click="goToPreferences">Preferences</li>
+
         <li @click="logout">Logout</li>
       </ul>
     </div>
@@ -33,6 +36,9 @@
 import { ref, onMounted } from 'vue';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const isDropdownOpen = ref(false);
 
@@ -44,6 +50,13 @@ const goToProfile = () => {
   console.log('Navigating to Profile...');
   // Add Vue Router navigation: this.$router.push('/profile');
 };
+
+
+const goToPreferences = () => {
+  console.log('Navigating to Preferences...');
+  router.push('/preferences')
+};
+=======
 
 
 const logout = () => {
