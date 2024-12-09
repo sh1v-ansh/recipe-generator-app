@@ -119,7 +119,7 @@ const submitPreferences = async () => {
   for (const [category, tags] of Object.entries(preferences)) {
     Object.keys(tags).forEach((tag) => {
       if (tags[tag]) {
-        selectedPreferences[tag.toLowerCase()]= true; 
+        selectedPreferences[tag.toLowerCase()] = true;
       }
     });
   }

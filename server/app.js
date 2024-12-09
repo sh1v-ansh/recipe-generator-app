@@ -17,11 +17,17 @@ app.use(cors())
 
 const buildQuery = (tags) => {
   let query = db.collection('recipes'); 
+  
   Object.keys(tags).forEach((tag) => {
-    if (tags[tag]) {
+    if (tags[tag] === true) {
+
       query = query.where(tag, '==', true);
+    } else if (tags[tag] === false) {
+
+      query = query.where(tag, '==', false);
     }
   });
+
   return query;
 };
 
