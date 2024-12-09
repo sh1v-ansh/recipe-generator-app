@@ -85,32 +85,34 @@
     },
   });
   
-  // Function to toggle preferences
+
   const togglePreference = (category: keyof typeof preferences, tag: string) => {
     preferences[category][tag] = !preferences[category][tag];
   };
   
-  // Function to handle form submission
+
   const submitPreferences = () => {
-    const selectedPreferences: { [key: string]: string[] } = {
-      Allergens: [],
-      Diet: [],
-      Nutrition: [],
-    };
-  
-    for (const [category, tags] of Object.entries(preferences)) {
-      selectedPreferences[category] = Object.keys(tags).filter((tag) => tags[tag]);
-    }
-  
-    console.log("Selected Preferences:", selectedPreferences);
-    alert(
-      `Your preferences have been saved:\n${JSON.stringify(
-        selectedPreferences,
-        null,
-        2
-      )}`
-    );
-  };
+  const selectedPreferences: { [tag: string]: boolean } = {};
+
+
+  for (const [category, tags] of Object.entries(preferences)) {
+
+    Object.keys(tags).forEach((tag) => {
+      if (tags[tag]) {
+        selectedPreferences[tag.toLowerCase()]= true; 
+      }
+    });
+  }
+
+  console.log("Selected Preferences:", selectedPreferences);
+  alert(
+    `Your preferences have been saved:\n${JSON.stringify(
+      selectedPreferences,
+      null,
+      2
+    )}`
+  );
+};
   </script>
   
   <style scoped>

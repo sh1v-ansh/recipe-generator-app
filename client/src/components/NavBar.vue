@@ -76,8 +76,31 @@ const handleAuth = async () => {
   } else {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      console.log("User logged in");
+
+      const result = await signInWithPopup(auth, provider);
+
+
+      const user = result.user; 
+
+
+      const uid = user.uid;
+
+
+      const requestBody = {
+        uid
+      };
+
+ 
+      const response = await fetch('http://localhost:3000/api/users/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log("User logged in", response);
+
     } catch (error) {
       console.error("Login failed:", error);
     }
