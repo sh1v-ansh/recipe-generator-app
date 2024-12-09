@@ -56,7 +56,7 @@ const goToPreferences = () => {
   console.log('Navigating to Preferences...');
   router.push('/preferences')
 };
-=======
+
 
 
 const logout = () => {

@@ -17,7 +17,7 @@ const routes = [
 
     { path: '/meal-plan', component: GeneratedRecipes },
     { path: '/preferences', component: Preferences },
-=======
+
 
     {path: '/meal-plan', component: GeneratedRecipes},
 
