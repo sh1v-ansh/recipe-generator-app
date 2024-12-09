@@ -26,9 +26,37 @@ const buildQuery = (tags) => {
 };
 
 
+
+  function formatRecipe(recipe, uid) {
+  
+    const tags = [
+      'vegetarian', 'vegan', 'low-carb', 'paleo', 'keto', 'pescatarian',
+      'wheat', 'dairy', 'nuts', 'shellfish', 'soy', 'fish', 'peanuts', 'eggs',
+      'high-protein', 'diabetic'
+    ];
+  
+
+    const trueTags = tags.filter(tag => recipe[tag] === true);
+  
+  
+    const formattedRecipe = {
+      "recipeId": uid,
+      "title": recipe.name,
+      "description" : recipe.description,
+      tags: trueTags
+    };
+  
+    // Remove all the individual tag properties from the new recipe object
+    tags.forEach(tag => delete formattedRecipe[tag]);
+  
+    return formattedRecipe;
+  }
+
+
+
 app.post('/generate-meal-plan', async (req, res) => {
 
-  const { uid } = response.body;
+  const { uid } = req.body;
 
   const response = await fetch(`http://localhost:3000/api/users/filters?uid=${uid}`);
 
@@ -53,9 +81,9 @@ app.post('/generate-meal-plan', async (req, res) => {
 
 
       if (recipe.breakfast) {
-        meals.breakfast.push(recipe);
+        meals.breakfast.push(formatRecipe(recipe, doc.id));
       } else if (recipe.lunch) {
-        meals.lunch_dinner.push(recipe);
+        meals.lunch_dinner.push(formatRecipe(recipe, doc.id));
       }
     });
 
