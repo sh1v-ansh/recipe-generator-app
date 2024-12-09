@@ -13,123 +13,85 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
-app.post('/api/meal-plan/create', async (req, res) => {
-  const {uid} = req.body;
-  const response = await fetch(`http://localhost:3000/api/users/filters?uid=${uid}`);;
 
 
-  const filters = response.json();
-  
-  const allergens = [
-    'wheat', 'dairy', 'nuts', 'shellfish', 'soy', 'fish', 'peanuts', 'eggs'
-  ];
-
-  allergens.forEach((allergen) => {
-    if (filters.hasOwnProperty(allergen)) {
-      filters[allergen] = false;
+const buildQuery = (tags) => {
+  let query = db.collection('recipes'); 
+  Object.keys(tags).forEach((tag) => {
+    if (tags[tag]) {
+      query = query.where(tag, '==', true);
     }
   });
-  
+  return query;
+};
+
+
+app.post('/generate-meal-plan', async (req, res) => {
+
+  const { uid } = response.body;
+
+  const response = await fetch(`http://localhost:3000/api/users/filters?uid=${uid}`);
+
+  const { tags } = await response.json();
 
   try {
-    const recipes = await fetchFilteredRecipes(filters);
 
-    console.log(recipes);
-    
-    const mealPlan = createWeeklyMealPlan(recipes, filters);
+    const query = buildQuery(tags);
 
-    res.status(200).json({
-      mealPlan,
+    const snapshot = await query.get();
+    if (snapshot.empty) {
+      return res.status(404).json({ message: 'No recipes found with these filters.' });
+    }
+
+    const meals = {
+      breakfast: [],
+      lunch_dinner: [],
+    };
+
+    snapshot.forEach((doc) => {
+      const recipe = doc.data();
+
+
+      if (recipe.breakfast) {
+        meals.breakfast.push(recipe);
+      } else if (recipe.lunch) {
+        meals.lunch_dinner.push(recipe);
+      }
     });
+
+
+    if (meals.breakfast.length < 7 || meals.lunch_dinner.length < 14) {
+      return res.status(400).json({
+        message: 'Insufficient recipes for a full weekly meal plan.',
+      });
+    }
+
+
+    const selectedBreakfasts = getRandomItems(meals.breakfast, 7);
+    const selectedLunchDinners = getRandomItems(meals.lunch_dinner, 14);
+
+
+    const weeklyMealPlan = [];
+    for (let i = 0; i < 7; i++) {
+      weeklyMealPlan.push([
+        selectedBreakfasts[i],        
+        selectedLunchDinners[i * 2],  
+        selectedLunchDinners[i * 2 + 1] 
+      ]);
+    }
+
+    return res.json(weeklyMealPlan);
   } catch (error) {
-    console.error('Error creating meal plan:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error generating meal plan:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
 
-async function fetchFilteredRecipes(filters) {
-
-  const tagFields = ['vegetarian', 'vegan', 'low-carb', 'paleo', 'keto', 'pescatarian',
-    'wheat', 'dairy', 'nuts', 'shellfish', 'soy', 'fish', 'peanuts', 'eggs',
-    'high-protein'
-  ];
-
-  try {
-    let query = db.collection("recipes");
-    
-
-    if (filters && Object.keys(filters).length > 0) {
-      tagFields.forEach(tag => {
-        if (filters[tag] !== undefined) {
-          query = query.where(tag, "==", filters[tag]);
-        }
-      });
-    }
-
-    const snapshot = await query.get();
-    const recipes = [];
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      recipes.push({
-        id: doc.id, 
-        ...data 
-      });
-    });
-
-    return recipes;
-  } catch (error) {
-    throw new Error('Error fetching recipes from Firestore');
-  }
-}
-
-function createWeeklyMealPlan(recipes) {
-
-  const breakfastRecipes = [];
-  const lunchRecipes = []; 
-
-  recipes.forEach(recipe => {
-    if (recipe.breakfast) {
-      breakfastRecipes.push(recipe.name);
-    }
-    if (recipe.lunch) {
-
-      lunchRecipes.push(recipe.name);
-    }
-  });
-
-  const mealPlan = [];
-
-  for (let i = 0; i < 7; i++) {
-    const dailyMealPlan = [
-      randomChoice(breakfastRecipes),
-      randomChoice(lunchRecipes), 
-      randomChoice(lunchRecipes)  
-    ];
-    mealPlan.push(dailyMealPlan);
-  }
-
-  return mealPlan;
-}
-
-function randomChoice(array) {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
-}
-
-function filterRecipes(recipes, filters) {
-  if (!filters || Object.keys(filters).length === 0) return recipes; 
-
-  return recipes.filter(recipe => {
-
-    return Object.keys(filters).every(key => {
-      if (filters[key] === undefined) return true; 
-      return recipe[key] === filters[key]; 
-    });
-  });
-}
+const getRandomItems = (array, count) => {
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
 
 
 
