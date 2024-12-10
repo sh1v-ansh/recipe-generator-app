@@ -160,20 +160,52 @@ const getRandomItems = (array, count) => {
 
 */
 app.post('/api/recipes/fetch-any', async (req, res) => {
-  const { pageSize = 18, lastVisibleId, tag } = req.body;
+  let { pageSize = 18, lastVisibleId, tags } = req.body;  
   const tagFields = [
-    "vegetarian", "vegan", "gluten-free", "diabetic", "kosher",
-    "low-carb", "low-protein", "low-fat", "low-calorie", "high-protein", "high-calcium",
-    "egg-free", "lactose", "nuts", "shellfish"
+    "vegetarian", "vegan", "pescatarian", "diabetic", 
+    "low-carb", "high-protein", "paleo", "keto"
+  ];
+
+  const allergenFields = [    
+    "wheat", "dairy", "fish", "shellfish", 
+    "soy", "eggs", "nuts"
   ];
 
   try {
     let query = db.collection("recipes2").limit(pageSize);
 
-    if (tag != '' && tagFields.includes(tag)) {
-      query = query.where(tag, "==", true);
+    // Separate tags and allergens based on the provided list
+    const validTags = [];
+    const validAllergens = [];
+
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+      tags.forEach(tag => {
+        // If the tag is found in the tag fields, treat it as a tag
+        if (tagFields.includes(tag)) {
+          validTags.push(tag);
+        }
+        // If the tag is found in allergen fields, treat it as an allergen
+        else if (allergenFields.includes(tag)) {
+          validAllergens.push(tag);
+        }
+      });
     }
 
+    // Handle tag filtering (AND condition on tags being true)
+    if (validTags.length > 0) {
+      validTags.forEach(tag => {
+        query = query.where(tag, "==", true);  // Filter by tag being true
+      });
+    }
+
+    // Handle allergen filtering (AND condition on allergens being false)
+    if (validAllergens.length > 0) {
+      validAllergens.forEach(allergen => {
+        query = query.where(allergen, "==", false);  // Filter by allergen being false
+      });
+    }
+
+    // Handle pagination with lastVisibleId
     if (lastVisibleId) {
       const lastVisibleDoc = await db.collection("recipes2").doc(lastVisibleId).get();
       if (lastVisibleDoc.exists) {
@@ -183,22 +215,25 @@ app.post('/api/recipes/fetch-any', async (req, res) => {
       }
     }
 
+    // Execute the query
     const snapshot = await query.get();
     const recipes = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      const tags = tagFields.filter(field => data[field] === true);
-      
+      // Get all tags set to true
+      const recipeTags = [...tagFields.filter(field => data[field] === true)];
 
-      const capitalizedName = data.name
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    
+      // Add allergens to the recipeTags array if they are set to false
+      allergenFields.forEach(allergen => {
+        if (data[allergen] === true) {
+          recipeTags.push(allergen);  // Add allergen to tags if it's false
+        }
+      });
 
-      recipes.push({ id: doc.id, name: capitalizedName, description: data.description, tags });
+      recipes.push({ id: doc.id, name: data.name, description: data.description, tags: recipeTags });
     });
 
+    // Prepare the response with the next `lastVisibleId`
     const lastVisible = snapshot.docs[snapshot.docs.length - 1];
     res.status(200).json({
       recipes,

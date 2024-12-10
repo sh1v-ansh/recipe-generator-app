@@ -60,7 +60,7 @@ const router = useRouter();
 
 
 const recipes = reactive([]); 
-const fetchedRecipes = ref([]);
+
 const loading = ref(false);
 
 
@@ -72,13 +72,16 @@ const fetchRecipes = async (tag = '') => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         pageSize: 18,
-        tag: tag
+        tags: tag
       }),
     });
     const data = await response.json();
 
     console.log('Fetched Recipes:', data.recipes); 
+
     
+    
+
     recipes.splice(0, recipes.length, ...data.recipes || []);
   } catch (error) {
     console.error('Error fetching recipes:', error);
@@ -137,7 +140,7 @@ const selectedFilters = reactive<string[]>([]);
 const updateSelectedFilters = (category: string, filter: string, isSelected: boolean) => {
   const filterKey = `${filter}`;
   if (isSelected) {
-    if (!selectedFilters.includes(filterKey)) selectedFilters.push(filterKey);
+    if (!selectedFilters.includes(filterKey)) selectedFilters.push(filterKey.toLowerCase());
   } 
   else{
     const index = selectedFilters.indexOf(filterKey);
@@ -146,9 +149,11 @@ const updateSelectedFilters = (category: string, filter: string, isSelected: boo
   
   /***Integration with the backend; use selectedFilters to figure out filters are activated,
   check for formatting */
-  console.log("All selected filters:", selectedFilters[0]);
+  console.log("All selected filters:", selectedFilters);
+  let regularArray = Array.from(selectedFilters);
+  console.log(regularArray)
 
-  fetchRecipes(selectedFilters[0])
+  fetchRecipes(selectedFilters);
 };
 
 //Checker for the All button to determine if active
