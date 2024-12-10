@@ -22,7 +22,7 @@
 
         <li @click="goToPreferences">Preferences</li>
 
-        <li @click="handleAuth">Login/Logout</li>
+        <li @click="handleAuth">{{ isLoggedIn ? 'Logout' : 'Login' }}</li>
       </ul>
     </div>
 

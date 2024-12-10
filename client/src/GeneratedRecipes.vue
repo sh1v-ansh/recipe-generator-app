@@ -45,7 +45,6 @@ const goToMealPlanGenerator = () => {
 
 const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
 
-// Placeholder for recipes fetched for each day
 const recipesForDay = ref([]);
 
 // Mock backend API response to demonstrate dynamic data handling
@@ -101,10 +100,9 @@ const fetchRecipesForDays = async () => {
 
 // View recipe handler
 const viewRecipeHandler = (recipeId) => {
-router.push(`/recipes/${recipeId}`); // Replace with actual route
+router.push(`/recipes/${recipeId}`);
 };
 
-// Fetch recipes when component is mounted
 onMounted(fetchRecipesForDays);
 </script>
 

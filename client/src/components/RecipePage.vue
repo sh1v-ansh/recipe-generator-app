@@ -83,56 +83,6 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const recipeData = ref(null);
 
-//Synthetic data for now, remove once fully integrated with back
-const syntheticRecipes = [
-  {
-    name: "french onion soup i i",
-    id: "133197",
-    minutes: 65,
-    submitted: "2005-08-11",
-    n_steps: 8,
-    steps: [
-      "saut onion in butter in 5 quart dutch oven over low heat for 15 minutes or until onions are golden brown and tender",
-      "stir in broth , bouillon cube , pepper and worcestershire sauce",
-      "bring to a boil",
-      "cover and reduce heat and simmer 25 minutes",
-      "ladle soup into four to six oven proof bowls , top with a slice of toasted bread",
-      "sprinkle 2 tablespoons of cheese mix on top of bread",
-      "place bowls on foil lined cookie sheet",
-      "broil 3-5 inches from the heat 1-3 minutes until cheese is bubbly",
-    ],
-    description:
-      "this is from my sister-in-law but we made a few changes.  her original recipe is posted as french onion soup.  was there any doubt?",
-    ingredients: [
-      "onions",
-      "butter",
-      "beef consomme",
-      "beef bouillon cube",
-      "worcestershire sauce",
-      "pepper",
-      "mozzarella cheese",
-      "french bread",
-    ],
-    n_ingredients: 8,
-    diabetic: true,
-    calories: 715.8,
-    total_fat_grams: 42.12,
-    sugar_grams: 16.5,
-    sodium_grams: 2.185,
-    protein_grams: 28.5,
-    saturated_fat_grams: 20.8,
-    lunch: true,
-    "keto-friendly": true,
-    "pescatarian-friendly": true,
-    "vegetarian-friendly": false,
-    "vegan-friendly": false,
-    "paleo-friendly": false,
-    "diabetic-friendly": false,
-    "contains-dairy": true,
-    "contains-wheat": true,
-  },
-];
-
 const fetchRecipeData = async (id) => {
   try {
     const response = await fetch(`http://localhost:3000/api/recipe?uid=${id}`);

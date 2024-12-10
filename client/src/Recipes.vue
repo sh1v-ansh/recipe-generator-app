@@ -108,13 +108,6 @@ const filterState = reactive({
     Vegan: false,
     Pescatarian: false,
   },
-  'Meal Category': {
-    Breakfast: false,
-    Lunch: false,
-    Dinner: false,
-    Dessert: false,
-    Snack: false,
-  },
   Nutrition: {
     'high-protein': false,
     'low-carb': false,
