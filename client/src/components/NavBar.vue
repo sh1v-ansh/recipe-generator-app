@@ -10,7 +10,7 @@
         <li><router-link to="/chefs" class="hover-link" active-class="router-link-active">CHEFS</router-link></li>
       </ul>
     </div>
-    <div class="profile-dropdown" v-if="isLoggedIn">
+    <div class="profile-dropdown" >
       <img
         src="../assets/default_profile.jpg"
         alt="Profile"
@@ -22,12 +22,10 @@
 
         <li @click="goToPreferences">Preferences</li>
 
-        <li @click="handleAuth">Logout</li>
+        <li @click="handleAuth">Login/Logout</li>
       </ul>
     </div>
-    <button v-else @click="handleAuth" class="btn-login">
-      Log In
-    </button>
+
   </div>
 </template>
 
@@ -69,7 +67,7 @@ const logout = async () => {
     localStorage.removeItem('authToken');
     isLoggedIn.value = false;
     user.value = null;
-    console.log('User logged out');
+    alert('Successfully logged out');
   } catch (error) {
     console.error('Logout failed:', error);
   }

@@ -14,14 +14,39 @@ app.use(express.json());
 app.use(cors())
 
 
+app.get('/api/recipe', async (req, res) => {
+  const uid = req.query.uid; // Extract UID from query parameter
+
+  if (!uid) {
+    return res.status(400).json({ error: 'Missing uid query parameter' });
+  }
+
+  try {
+    const doc = await db.collection('recipes2').doc(uid).get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    res.status(200).json(doc.data());
+  } catch (error) {
+    console.error('Error fetching recipe:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 const buildQuery = (tags) => {
-  let query = db.collection('recipes'); 
+  let query = db.collection('recipes2'); 
   
   Object.keys(tags).forEach((tag) => {
     if (tags[tag] === true) {
 
       query = query.where(tag, '==', true);
+    } 
+    else if (tags[tag] === false) {
+
+      query = query.where(tag, '==', false);
     } 
   });
 
@@ -143,14 +168,14 @@ app.post('/api/recipes/fetch-any', async (req, res) => {
   ];
 
   try {
-    let query = db.collection("recipes").limit(pageSize);
+    let query = db.collection("recipes2").limit(pageSize);
 
     if (tag != '' && tagFields.includes(tag)) {
       query = query.where(tag, "==", true);
     }
 
     if (lastVisibleId) {
-      const lastVisibleDoc = await db.collection("recipes").doc(lastVisibleId).get();
+      const lastVisibleDoc = await db.collection("recipes2").doc(lastVisibleId).get();
       if (lastVisibleDoc.exists) {
         query = query.startAfter(lastVisibleDoc);
       } else {
@@ -287,7 +312,7 @@ app.post('/api/users/get-recipes', async (req, res) => {
 
       console.log(recipeIds);
       
-      const recipesCollection = db.collection('recipes');
+      const recipesCollection = db.collection('recipes2');
       const recipesPromises = recipeIds.map(id => recipesCollection.doc(String(id)).get());
       const recipeDocs = await Promise.all(recipesPromises);
 

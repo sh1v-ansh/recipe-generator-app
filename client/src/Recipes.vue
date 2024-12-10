@@ -51,6 +51,13 @@ import { reactive, ref, computed } from 'vue';
 import RecipeCard from './components/RecipeCard.vue';
 import TabWrapper from './components/TabWrapper.vue';
 
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+
+
 
 const recipes = reactive([]); 
 const fetchedRecipes = ref([]);
@@ -188,8 +195,8 @@ const changePage = (page: number) => {
 };
 
 //Helper "View Recipe"
-const viewRecipe = (recipeId: number) => {
-  console.log(`Viewing recipe with ID: ${recipeId}`);
+const viewRecipe = (recipeId: String) => {
+  router.push(`/recipes/${recipeId}`);
 };
 
 
