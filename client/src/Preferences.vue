@@ -122,7 +122,10 @@ const submitPreferences = async () => {
   // Gather preferences
   for (const [category, tags] of Object.entries(preferences)) {
     Object.keys(tags).forEach((tag) => {
-      if (tags[tag]) {
+      if(tags[tag] && allergens.includes(tag)){
+        selectedPreferences[tag.toLowerCase()] = false;
+      }
+      else if (tags[tag]) {
         selectedPreferences[tag.toLowerCase()] = true;
       }
     });

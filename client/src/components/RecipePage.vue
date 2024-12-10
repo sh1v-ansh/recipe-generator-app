@@ -37,25 +37,25 @@
         <div class="details-box">
           <h4>Dietary Information</h4>
           <ul>
-            <li v-if="recipeData['keto-friendly']">Keto-Friendly</li>
-            <li v-if="recipeData['paleo-friendly']">Paleo-Friendly</li>
-            <li v-if="recipeData['vegetarian-friendly']">Vegetarian</li>
-            <li v-if="recipeData['vegan-friendly']">Vegan</li>
-            <li v-if="recipeData['pescatarian-friendly']">Pescatarian</li>
-            <li v-if="recipeData['diabetic-friendly']">Diabetic-Friendly</li>
+            <li v-if="recipeData['keto']">Keto-Friendly</li>
+            <li v-if="recipeData['paleo']">Paleo-Friendly</li>
+            <li v-if="recipeData['vegetarian']">Vegetarian</li>
+            <li v-if="recipeData['vegan']">Vegan</li>
+            <li v-if="recipeData['pescatarian']">Pescatarian</li>
+            <li v-if="recipeData['diabetic']">Diabetic-Friendly</li>
           </ul>
         </div>
 
         <div class="details-box">
           <h4>Allergens</h4>
           <ul>
-            <li v-if="recipeData['contains-dairy']">Contains Dairy</li>
-            <li v-if="recipeData['contains-wheat']">Contains Wheat</li>
-            <li v-if="recipeData['contains-nuts']">Contains Nuts</li>
-            <li v-if="recipeData['contains-Shellfish']">Contains Shellfish</li>
-            <li v-if="recipeData['contains-Soy']">Contains Soy</li>
-            <li v-if="recipeData['contains-Fish']">Contains Fish</li>
-            <li v-if="recipeData['contains-Eggs']">Contains Eggs</li>
+            <li v-if="recipeData['dairy']">Contains Dairy</li>
+            <li v-if="recipeData['wheat']">Contains Wheat</li>
+            <li v-if="recipeData['nuts']">Contains Nuts</li>
+            <li v-if="recipeData['shellfish']">Contains Shellfish</li>
+            <li v-if="recipeData['soy']">Contains Soy</li>
+            <li v-if="recipeData['fish']">Contains Fish</li>
+            <li v-if="recipeData['eggs']">Contains Eggs</li>
           </ul>
         </div>
 
@@ -87,7 +87,7 @@ const recipeData = ref(null);
 const syntheticRecipes = [
   {
     name: "french onion soup i i",
-    id: 133197,
+    id: "133197",
     minutes: 65,
     submitted: "2005-08-11",
     n_steps: 8,
@@ -133,11 +133,17 @@ const syntheticRecipes = [
   },
 ];
 
-const fetchRecipeData = (id) => {
-  //replace here to actually fetch
-  recipeData.value = syntheticRecipes.find((recipe) => recipe.id === parseInt(id)) || null;
+const fetchRecipeData = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/recipe?uid=${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch recipe data: ${response.statusText}`);
+    }
+    recipeData.value = await response.json(); // Properly parse JSON response
+  } catch (error) {
+    console.error("Error fetching recipe data:", error);
+  }
 };
-
 onMounted(() => {
   const recipeId = route.params.id;
   fetchRecipeData(recipeId);

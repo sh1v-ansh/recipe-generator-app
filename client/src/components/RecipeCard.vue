@@ -16,7 +16,7 @@
                 <div class="recipe-tags">
                     <span v-for="tag in tags.slice(0, 3)" :key="tag" class="recipe-tag">{{ tag }}</span>
                 </div>
-                <button @click="viewRecipe" class="view-recipe-button">View Recipe</button>
+                <button @click="viewRecipe(recipeId)" class="view-recipe-button">View Recipe</button>
             </div>
         </div>
     </div>
@@ -47,8 +47,11 @@ defineProps({
 });
 
 const emit = defineEmits(['view-recipe']);
-const viewRecipe = () => {
-    emit('view-recipe', recipeId);
+const viewRecipe = (recipeId) => {
+
+  console.log("Recipe ID to emit:", recipeId);
+
+  emit('view-recipe', recipeId);
 };
 
 const iconMap = {
